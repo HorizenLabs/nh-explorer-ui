@@ -1,0 +1,33 @@
+<!--
+  ~ Polkascan Explorer UI
+  ~ Copyright (C) 2018-2023 Polkascan Foundation (NL)
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<div class="network-page network-{{ vars.network|async }}">
+  <ps-top-bar></ps-top-bar>
+  <explorer-menu class="width-container"></explorer-menu>
+  <div class="width-container network-explorer-container">
+    <router-outlet></router-outlet>
+  </div>
+  <div class="network-explorer-bottom-bar" *ngIf="showBottomBar">
+    <div><small *ngIf="subsquidRegistered | async">Data indexes provided by <a href="https://www.subsquid.io/" target="_blank">Subsquid</a>.</small></div>
+    <div><small>Polkascan Foundation offers no warranties or guarantees concerning the accuracy of the data provided.</small></div>
+    <div><small>Cookies are used. <a routerLink="/privacy-policy">Privacy Policy</a></small></div>
+    <div class="network-explorer-close-bottom-bar">
+      <button mat-icon-button (click)="showBottomBar = false"><mat-icon>close</mat-icon></button>
+    </div>
+  </div>
+</div>

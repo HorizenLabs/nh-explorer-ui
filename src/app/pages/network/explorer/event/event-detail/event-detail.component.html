@@ -1,0 +1,101 @@
+<!--
+  ~ Polkascan Explorer UI
+  ~ Copyright (C) 2018-2023 Polkascan Foundation (NL)
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<button mat-button [routerLink]="'..'"><i class="fas fa-chevron-left"></i> Events</button>
+
+<h1>Event</h1>
+
+<ng-container *ngIf="(event | async) as event; else loadingOrError">
+  <ng-container *ngIf="(networkProperties | async) as props">
+
+    <h2>{{event.blockNumber + '-' + event.eventIdx}}</h2>
+
+    <table class="detail-table">
+      <tbody>
+      <tr>
+        <td class="detail-table--label-cell">Block</td>
+        <td><a [routerLink]="'../../block/' + event.blockNumber">{{event.blockNumber}}</a></td>
+      </tr>
+
+      <tr *ngIf="event.extrinsicIdx !== null && event.extrinsicIdx !== undefined">
+        <td class="detail-table--label-cell">Extrinsic</td>
+        <td>
+          <a [routerLink]="'../../extrinsic/' + event.blockNumber + '-' + event.extrinsicIdx">
+            {{event.blockNumber + '-' + event.extrinsicIdx}}
+          </a>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="detail-table--label-cell">Event Index</td>
+        <td>{{event.eventIdx}}</td>
+      </tr>
+
+      <tr>
+        <td class="detail-table--label-cell">Pallet</td>
+        <td><a
+          [routerLink]="'../../runtime/' + (event.specName || props.specName) + '-' + event.specVersion + '/pallet/' + event.eventModule">{{event.eventModule}}</a>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="detail-table--label-cell">Event name</td>
+        <td><a
+          [routerLink]="'../../runtime/' + (event.specName || props.specName) + '-' + event.specVersion + '/pallet/' + event.eventModule + '/event/' + event.eventName">{{event.eventName}}</a>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="detail-table--label-cell">Runtime</td>
+        <td><a
+          [routerLink]="'../../runtime/' + (event.specName || props.specName) + '-' + event.specVersion">{{(event.specName || props.specName) + '-' + event.specVersion}}</a>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="detail-table--label-cell">Attributes</td>
+        <ng-template #attributesLoadingOrError>
+          <ng-container [ngSwitch]="fetchEventAttributesStatus | async">
+            <td>
+              <ng-container *ngSwitchCase="'loading'">Loading attributes...</ng-container>
+              <ng-container *ngSwitchCase="'error'">Failed to load attributes.</ng-container>
+            </td>
+          </ng-container>
+        </ng-template>
+        <ng-container *ngIf="(eventAttributes | async) as attributes; else attributesLoadingOrError">
+          <td>
+            <attributes [attributes]="attributes" [iconTheme]="props.iconTheme" [iconSize]="24"
+                        [tokenDecimals]="props.tokenDecimals" [tokenSymbol]="props.tokenSymbol"
+                        [ss58Prefix]="props.ss58Format"
+                        [runtimeEventAttributes]="runtimeEventAttributes | async"></attributes>
+          </td>
+        </ng-container>
+      </tr>
+
+      </tbody>
+    </table>
+
+  </ng-container>
+</ng-container>
+
+<ng-template #loadingOrError>
+  <ng-container *ngIf="(fetchEventStatus | async) as status">
+    <p *ngIf="status === 'loading'">Loading...</p>
+    <p *ngIf="status === 'error'">Could not fetch event.</p>
+  </ng-container>
+</ng-template>

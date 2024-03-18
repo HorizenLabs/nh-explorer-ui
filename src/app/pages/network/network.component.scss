@@ -1,0 +1,46 @@
+/*!
+ * Polkascan Explorer UI
+ * Copyright (C) 2018-2023 Polkascan Foundation (NL)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+.network-page {
+  min-height: 100%;
+  background: var(--ps-top-bar-bg-color);
+  color: #fff;
+}
+
+.network-explorer-container {
+  padding-top: 1px;
+  padding-bottom: 120px;
+  background: var(--ps-explorer-container, #fff);
+  border-radius: 4px;
+  color: #222;
+}
+
+.network-explorer-bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  column-gap: 16px;
+  background: var(--ps-bottom-bar-bg-color, #333);
+  color: var(--ps-bottom-bar-text-color, #fff);
+  padding: 0 8px;
+}
