@@ -1,0 +1,10 @@
+## Angular ##
+dist/
+tmp/
+.cache/
+
+# dependencies
+node_modules/
+
+## Polkadapt ##
+polkadapt/.cache/
