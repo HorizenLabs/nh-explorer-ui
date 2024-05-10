@@ -70,8 +70,16 @@ export class EventDetailComponent implements OnInit, OnDestroy {
       switchMap(([blockNr, eventIdx]) =>
         this.pa.run().getEvent(blockNr, eventIdx).pipe(
           switchMap((obs) => obs),
+          filter((event) => !Array.isArray(event.attributes)), //* if attributes is an array, it's a rpc response and we can discard it
           map((event) => {
             if (event) {
+              const { attributes } = event;
+              if (attributes) {
+                const jsonAttributes = JSON.parse(attributes.toString());
+                const sortedKeys = Object.keys(jsonAttributes).sort();
+                // @ts-ignore
+                event.attributes = sortedKeys.map(key => jsonAttributes[key]);
+              }
               this.fetchEventStatus.next(null);
               return event;
             }
