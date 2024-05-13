@@ -4,6 +4,8 @@ ARG ARG_FROM_IMAGE_TAG=lts
 # base image
 FROM ${ARG_FROM_IMAGE}:${ARG_FROM_IMAGE_TAG} as builder
 
+ENV NODE_OPTIONS="--max-old-space-size=6000"
+
 # The application depends on PolkADAPT, so we have to install and build PolkADAPT first.
 WORKDIR /app/polkadapt
 
