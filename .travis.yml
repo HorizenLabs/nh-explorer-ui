@@ -9,7 +9,7 @@ git:
 
 env:
   global:
-    - DOCKER_IMAGE_BUILD_NAME=nh-explorer-ui
+    - DOCKER_IMAGE_BUILD_NAME=zkverify-explorer-ui
     - RELEASE_BRANCH=main
 
 before_script:
