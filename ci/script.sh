@@ -3,7 +3,7 @@ set -euo pipefail
 
 base_docker_image_name="${BASE_DOCKER_IMAGE_NAME:-node}"
 base_docker_image_tag="${BASE_DOCKER_IMAGE_TAG:-lts}"
-docker_image_build_name="${DOCKER_IMAGE_BUILD_NAME:-nh-explorer-ui}"
+docker_image_build_name="${DOCKER_IMAGE_BUILD_NAME:-zkverify-explorer-ui}"
 docker_hub_org="${DOCKER_HUB_ORG:-horizenlabs}"
 docker_tag="${DOCKER_TAG:-latest}"
 
