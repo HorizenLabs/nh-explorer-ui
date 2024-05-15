@@ -73,15 +73,15 @@ export class EventDetailComponent implements OnInit, OnDestroy {
           filter((event) => !Array.isArray(event.attributes)), //* if attributes is an array, it's a rpc response and we can discard it
           map((event) => {
             if (event) {
+              let eventFormatted = { ...event };
               const { attributes } = event;
               if (attributes) {
                 const jsonAttributes = JSON.parse(attributes.toString());
                 const sortedKeys = Object.keys(jsonAttributes).sort();
-                // @ts-ignore
-                event.attributes = sortedKeys.map(key => jsonAttributes[key]);
+                eventFormatted.attributes = sortedKeys.map(key => jsonAttributes[key]);
               }
               this.fetchEventStatus.next(null);
-              return event;
+              return eventFormatted;
             }
             throw new Error('Event not found.')
           })
