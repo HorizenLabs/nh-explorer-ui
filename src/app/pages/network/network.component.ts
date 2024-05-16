@@ -17,13 +17,11 @@
  */
 
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { distinctUntilChanged, filter, map, switchMap, takeUntil } from 'rxjs/operators';
 import { NetworkService } from '../../services/network.service';
-import { combineLatestWith, Observable, Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { VariablesService } from '../../services/variables.service';
 import { PolkadaptService } from '../../services/polkadapt.service';
-import { AppConfig } from '../../app-config';
 
 @Component({
   templateUrl: './network.component.html',
@@ -35,36 +33,21 @@ export class NetworkComponent implements OnInit, OnDestroy {
   showBottomBar = true;
 
   private destroyer = new Subject<void>();
+  private DEFAULT_NETWORK = 'v0';
 
-  constructor(private route: ActivatedRoute,
+  constructor(
               private ns: NetworkService,
               private pa: PolkadaptService,
-              private config: AppConfig,
-              private router: Router,
               public vars: VariablesService,
   ) {
     this.subsquidRegistered = this.pa.subsquidRegistered.asObservable();
   }
 
   ngOnInit(): void {
-    // Change network when param changes in route.
-    this.route.params
-      .pipe(
-        map((p) => p['network']),
-        distinctUntilChanged(),
-        takeUntil(this.destroyer)
-      )
-      .subscribe({
-        next: (network: string) => {
-          if (this.config.networks[network]) {
-            this.ns.setNetwork(network);
-            this.vars.network.next(network);
-            this.vars.blockNumber.next(0);
-          } else {
-            this.router.navigate(['/']);
-          }
-        }
-      });
+    // Set the default network.
+    this.ns.setNetwork(this.DEFAULT_NETWORK)
+    this.vars.network.next(this.DEFAULT_NETWORK);
+    this.vars.blockNumber.next(0);
 
     // Pass the last loaded number to the variables service, so other parts of the application can pick it up.
     this.ns.currentNetwork.pipe(

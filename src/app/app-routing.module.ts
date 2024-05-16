@@ -31,12 +31,12 @@ const routes: Routes = [
     component: PrivacyPolicyComponent
   },
   {
-    path: ':network',
+    path: '',
     loadChildren: () => import('./pages/network/network.module').then(m => m.NetworkModule)
   },
   {
-    path: '',
-    loadChildren: () => import('./pages/home/home.module').then(m => m.HomeModule),
+    path: ':network',
+    loadChildren: () => import('./pages/network/network.module').then(m => m.NetworkModule)
   },
   {path: '**', component: PageNotFoundComponent}
 ];
