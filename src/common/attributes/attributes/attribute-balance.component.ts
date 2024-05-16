@@ -17,6 +17,7 @@
  */
 
 import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges, ViewEncapsulation } from '@angular/core';
+import BigNumber from "bignumber.js";
 
 @Component({
   selector: 'attribute-balance',
@@ -33,7 +34,7 @@ export class AttributeBalanceComponent implements OnChanges {
   @Input() tokenDecimals: number;
   @Input() tokenSymbol: string;
 
-  convertedValue: number | null;
+  convertedValue: BigNumber | null;
   private decimals: number;
 
   constructor() {
@@ -45,10 +46,10 @@ export class AttributeBalanceComponent implements OnChanges {
     }
 
     if (changes['tokenDecimals'] || changes['attribute'] || changes['decimals']) {
-      let converted: number | null;
+      let converted: BigNumber | null;
 
       try {
-        converted = Math.max(0, parseInt(this.attribute.value as string, 10)) / Math.pow(10, this.decimals);
+        converted = BigNumber.maximum(0, (new BigNumber(this.attribute.value))).dividedBy(new BigNumber(Math.pow(10, this.decimals)));
       } catch (e) {
         converted = null;
       }
