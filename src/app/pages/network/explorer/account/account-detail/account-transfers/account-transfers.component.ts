@@ -213,7 +213,7 @@ export class AccountTransfersComponent implements OnChanges, OnDestroy {
     // First check if there is a Transfer available.
     if ((eventOrTransfer as pst.Transfer).hasOwnProperty('amount')) {
       const amounts: eventAmounts = [];
-      const value = BigNumber((eventOrTransfer as pst.Transfer).amount).toFixed(0);
+      const value = new BigNumber((eventOrTransfer as pst.Transfer).amount).toFixed(0);
       amounts.push(['amount', new BN(value)]);
       const observable = of(amounts);
       this.amountsCache.set(key, observable);
@@ -227,11 +227,23 @@ export class AccountTransfersComponent implements OnChanges, OnDestroy {
       const amounts: eventAmounts = [];
 
       if (typeof attributes === 'string') {
-        for (let name of attrNames) {
-          const match = attributes.match(new RegExp(`"${name}": ?"?([+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?|\\d+)`));
-          if (match) {
-            const value = new BigNumber(match[1]).toFixed(0);
-            amounts.push([name, new BN(value)]);
+        try {
+          const jsonAttributes = JSON.parse(attributes);
+
+          for (let name of attrNames) {
+            if (jsonAttributes.hasOwnProperty(name)) {
+              const value = new BigNumber(jsonAttributes[name]).toFixed(0);
+              amounts.push([name, new BN(value)]);
+            }
+          }
+        } catch {
+          // Fallback to regex parsing to ensure we can still show the event.
+          for (let name of attrNames) {
+            const match = attributes.match(new RegExp(`"${name}": ?"?([+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?|\\d+)`));
+            if (match) {
+              const value = new BigNumber(match[1]).toFixed(0);
+              amounts.push([name, new BN(value)]);
+            }
           }
         }
       } else if (Object.prototype.toString.call(attributes) == '[object Object]') {

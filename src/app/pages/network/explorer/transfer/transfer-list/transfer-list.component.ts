@@ -303,11 +303,22 @@ export class TransferListComponent extends PaginatedListComponentBase<pst.Event 
       const amounts: eventAmounts = [];
 
       if (typeof attributes === 'string') {
-        for (let name of attrNames) {
-          const match = attributes.match(new RegExp(`"${name}": ?"?([+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?|\\d+)`));
-          if (match) {
-            const value = new BigNumber(match[1]).toFixed(0);
-            amounts.push([name, new BN(value)]);
+        try {
+          const jsonAttributes = JSON.parse(attributes);
+          for (let name of attrNames) {
+            if (jsonAttributes.hasOwnProperty(name)) {
+              const value = new BigNumber(jsonAttributes[name]).toFixed(0);
+              amounts.push([name, new BN(value)]);
+            }
+          }
+        } catch (e) {
+          // Fallback to regex parsing to ensure we can still show the event.
+          for (let name of attrNames) {
+            const match = attributes.match(new RegExp(`"${name}": ?"?([+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?|\\d+)`));
+            if (match) {
+              const value = new BigNumber(match[1]).toFixed(0);
+              amounts.push([name, new BN(value)]);
+            }
           }
         }
       } else if (Object.prototype.toString.call(attributes) == '[object Object]') {
