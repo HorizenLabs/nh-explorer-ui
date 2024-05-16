@@ -28,6 +28,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { BN, u8aToHex } from "@polkadot/util";
 import { decodeAddress } from "@polkadot/util-crypto";
 import { catchError, Observable, of, switchMap } from 'rxjs';
+import BigNumber from "bignumber.js";
 
 
 type eventAmounts = [string, BN][];
@@ -288,7 +289,8 @@ export class TransferListComponent extends PaginatedListComponentBase<pst.Event 
     // First check if there is a Transfer available.
     if ((eventOrTransfer as pst.Transfer).hasOwnProperty('amount')) {
       const amounts: eventAmounts = [];
-      amounts.push(['amount', new BN((eventOrTransfer as pst.Transfer).amount)]);
+      const value = new BigNumber((eventOrTransfer as pst.Transfer).amount).toFixed(0);
+      amounts.push(['amount', new BN(value)]);
       const observable = of(amounts);
       this.amountsCache.set(key, observable);
       return observable;
@@ -301,16 +303,29 @@ export class TransferListComponent extends PaginatedListComponentBase<pst.Event 
       const amounts: eventAmounts = [];
 
       if (typeof attributes === 'string') {
-        for (let name of attrNames) {
-          const match = new RegExp(`"${name}": ?\"?(\\d+)\"?`).exec(attributes);
-          if (match) {
-            amounts.push([name, new BN(match[1])]);
+        try {
+          const jsonAttributes = JSON.parse(attributes);
+          for (let name of attrNames) {
+            if (jsonAttributes.hasOwnProperty(name)) {
+              const value = new BigNumber(jsonAttributes[name]).toFixed(0);
+              amounts.push([name, new BN(value)]);
+            }
+          }
+        } catch (e) {
+          // Fallback to regex parsing to ensure we can still show the event.
+          for (let name of attrNames) {
+            const match = attributes.match(new RegExp(`"${name}": ?"?([+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?|\\d+)`));
+            if (match) {
+              const value = new BigNumber(match[1]).toFixed(0);
+              amounts.push([name, new BN(value)]);
+            }
           }
         }
       } else if (Object.prototype.toString.call(attributes) == '[object Object]') {
         attrNames.forEach((name) => {
           if (attributes.hasOwnProperty(name)) {
-            amounts.push([name, new BN(attributes[name])])
+            const value = new BigNumber(attributes[name]).toFixed(0);
+            amounts.push([name, new BN(value)])
           }
         })
       }
@@ -330,7 +345,8 @@ export class TransferListComponent extends PaginatedListComponentBase<pst.Event 
       map((event) => {
         const amounts: [string, BN][] = [];
         if (event.attributes) {
-          amounts.push(['amount', new BN(event.attributes[2])]);
+          const value = new BigNumber(event.attributes[2]).toFixed(0);
+          amounts.push(['amount', new BN(value)]);
         }
         return amounts;
       }),
