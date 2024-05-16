@@ -228,7 +228,7 @@ export class AccountTransfersComponent implements OnChanges, OnDestroy {
 
       if (typeof attributes === 'string') {
         for (let name of attrNames) {
-          const match = attributes.match(new RegExp(`"${name}": ?"?([+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?)`));
+          const match = attributes.match(new RegExp(`"${name}": ?"?([+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?|\\d+)`));
           if (match) {
             const value = new BigNumber(match[1]).toFixed(0);
             amounts.push([name, new BN(value)]);
