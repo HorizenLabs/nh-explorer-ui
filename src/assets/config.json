@@ -1,6 +1,6 @@
 {
   "v0": {
-    "substrateRpcUrlArray": ["wss://nh-rpc.horizenlabs.io"],
+    "substrateRpcUrlArray": ["wss://testnet-rpc.zkverify.io"],
     "explorerWsUrlArray": ["wss://testnet-explorer.zkverify.io/graphql-ws"]
   }
 }
